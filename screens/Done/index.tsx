@@ -1,18 +1,20 @@
 import * as React from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { Colour } from '../../constants'
-import { RootStackParamList } from '../../types'
+import { useAppDispatch } from '../../hooks'
+import { setScreen } from '../../redux/submitFormSlice'
 
-interface Props {
-	navigation: StackNavigationProp<RootStackParamList, 'Done'>
-}
+// interface Props {
+// 	navigation: StackNavigationProp<RootStackParamList, 'Done'>
+// }
 
-export default function Done({ navigation }: Props) {
+export default function Done() {
+	console.log('Done here')
+	const dispatch = useAppDispatch()
 	return (
 		<View style={styles.container}>
 			<Text>Done</Text>
-			<Button onPress={() => navigation.goBack()} title="Go back from ProfileScreen" />
+			<Button onPress={() => dispatch(setScreen('Home'))} title="Go back to HomeScreen" />
 		</View>
 	)
 }

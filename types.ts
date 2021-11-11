@@ -4,6 +4,11 @@ export type RootStackParamList = {
 	Done: undefined
 }
 
+export type ConfirmPageParamList = {
+	mail: string
+	password: string
+}
+
 export type RootStackNameList = {
 	Home: 'Home'
 	Confirm: 'Confirm'

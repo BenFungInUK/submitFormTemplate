@@ -6,12 +6,12 @@ import { Button } from 'react-native-elements'
 
 interface Props {
 	loading: boolean
-	disabled: boolean
 	targetScreen: keyof RootStackParamList
 	navigation: StackNavigationProp<RootStackParamList, keyof RootStackParamList>
+	navParam: undefined
 	// onClick: void
 }
-export function SubmitButton({ loading, disabled, targetScreen, navigation }: Props) {
+export function SubmitButton({ loading, targetScreen, navigation, navParam }: Props) {
 	const [isLoading, setLoading] = useState(false)
 
 	useEffect(() => {
@@ -21,7 +21,7 @@ export function SubmitButton({ loading, disabled, targetScreen, navigation }: Pr
 	function onButtonPressed() {
 		//send data to mysql, finally navigate to Done view
 		// onClick()
-		navigation.navigate(targetScreen)
+		navigation.navigate(targetScreen, navParam)
 		console.log('Submit!')
 	}
 
@@ -29,7 +29,6 @@ export function SubmitButton({ loading, disabled, targetScreen, navigation }: Pr
 		<Button
 			buttonStyle={styles.applyButton}
 			title="Go to Done"
-			disabled={disabled}
 			loading={isLoading}
 			onPress={onButtonPressed}
 		/>

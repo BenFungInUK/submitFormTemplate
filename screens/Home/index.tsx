@@ -1,24 +1,38 @@
 import React, { useState } from 'react'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { StyleSheet, ImageBackground, Text, View, StyleProp, ViewStyle } from 'react-native'
 import { Colour } from '../../constants'
-import { RootStackParamList } from '../../types'
 import { Card, Input, CheckBox, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { SubmitButton } from '../../components'
+import { useAppDispatch } from '../../hooks'
+import { setScreen, setUserInfo } from '../../redux/submitFormSlice'
 
-interface Props {
-	navigation: StackNavigationProp<RootStackParamList, 'Home'>
-}
+// interface Props {
+// 	navigation: StackNavigationProp<RootStackParamList, 'Home'>
+// }
 
-export default function Home({ navigation }: Props) {
+export default function Home() {
 	const [isChecked, setChecked] = useState(false)
 	const [isSecureEntry, setSecureEntry] = useState(true)
 	const [secureImg, setSecureImg] = useState('visibility')
 	const [mailErrMsg, setMailError] = useState('')
 	const [passErrMsg, setPassError] = useState('')
 
+	// Cannot use useRef in react-native-elements
+	// const inputMailRef = useRef<typeof Input>(null)
+	// const inputPasswordRef = useRef<typeof Input>(null)
+	const [mail, setMail] = useState('')
+	const [password, setPassword] = useState('')
+
 	// const [isLoading, setLoading] = useState(false)
+	const dispatch = useAppDispatch()
+	// React.useEffect(
+	// 	() =>
+	// 		navigation.addListener('focus', () => {
+	// 			console.log('focus Home')
+	// 			dispatch(setScreen('Confirm'))
+	// 		}),
+	// 	[navigation, dispatch]
+	// )
 
 	return (
 		<View style={styles.container}>
@@ -32,8 +46,7 @@ export default function Home({ navigation }: Props) {
 					<Card.Divider />
 					<Card.Image source={require('../../assets/icon.png')} />
 					<Text style={styles.cardTextContainer}>
-						The idea with React Native Elements is more about component structure than actual
-						design.
+						A testing input form build with React Native Elements component.
 					</Text>
 					<Input
 						placeholder="email@address.com"
@@ -41,6 +54,7 @@ export default function Home({ navigation }: Props) {
 						style={styles.normalText}
 						onChangeText={(value) => {
 							RegExValidation(value, '^[a-zA-Z0-9](?=.*[@])[a-zA-Z0-9@.]+$', 0)
+							setMail(value)
 						}}
 						labelStyle={styles.cardTextContainer}
 						renderErrorMessage={false}
@@ -58,6 +72,7 @@ export default function Home({ navigation }: Props) {
 								'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[@$!%*#?&])[A-Za-z0-9@$!%*#?&]{8,}$',
 								1
 							)
+							setPassword(value)
 						}}
 						renderErrorMessage={false}
 						errorStyle={Colour.red as StyleProp<ViewStyle>}
@@ -80,12 +95,28 @@ export default function Home({ navigation }: Props) {
 						checked={isChecked}
 						onPress={() => setChecked(!isChecked)}
 					/>
-					<SubmitButton
+					<Button
+						disabled={!isChecked || mailErrMsg !== '' || passErrMsg !== ''}
+						title="Go to Confirm"
+						onPress={() => {
+							dispatch(setUserInfo({ mail: mail, password: password }))
+							dispatch(setScreen('Confirm'))
+						}}
+					/>
+					{/* <NavigationButton
+						disabled={!isChecked || mailErrMsg !== '' || passErrMsg !== ''}
+						navigation={navigation}
+						title="Go to Confirm"
+						targetScreen="Confirm"
+						navParam={{ mail: mail, password: password }}
+					/> */}
+					{/* <SubmitButton
 						loading={false}
 						disabled={!isChecked || mailErrMsg !== '' || passErrMsg !== ''}
 						navigation={navigation}
 						targetScreen="Done"
-					/>
+						navParam={{ mail: mail, password: password }}
+					/> */}
 				</Card>
 			</ImageBackground>
 		</View>

@@ -1,18 +1,21 @@
-import React, { useState } from 'react'
-// import { StackNavigationProp } from '@react-navigation/stack'
+import React from 'react'
+// import { RouteProp } from '@react-navigation/native'
 import { StyleSheet, ImageBackground, Text, View } from 'react-native'
 import { Colour } from '../../constants'
-// import { RootStackParamList } from '../../types'
-import { Card, Input, CheckBox } from 'react-native-elements'
+import { Card, Input, CheckBox, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-// import { SubmitButton } from '../../components'
+import { useAppDispatch, useAppSelector } from '../../hooks'
+import { selectUserInfo } from '../../redux/selector'
+import { setScreen } from '../../redux/submitFormSlice'
 
 // interface Props {
+//	route: RouteProp<RootStackParamList, 'Confirm'>
 // 	navigation: StackNavigationProp<RootStackParamList, 'Confirm'>
 // }
 
-export default function Confirm(/*{ navigation }: Props*/) {
-	const [isChecked, setChecked] = useState(false)
+export default function Confirm() {
+	const dispatch = useAppDispatch()
+	const userInfo = useAppSelector(selectUserInfo)
 
 	return (
 		<View style={styles.container}>
@@ -26,8 +29,7 @@ export default function Confirm(/*{ navigation }: Props*/) {
 					<Card.Divider />
 					<Card.Image source={require('../../assets/icon.png')} />
 					<Text style={styles.cardTextContainer}>
-						The idea with React Native Elements is more about component structure than actual
-						design.
+						A testing input form build with React Native Elements component.
 					</Text>
 					<Input
 						disabled={true}
@@ -35,22 +37,22 @@ export default function Confirm(/*{ navigation }: Props*/) {
 						style={styles.normalText}
 						labelStyle={styles.cardTextContainer}
 						renderErrorMessage={false}
-						value={'test'}
+						value={userInfo.mail}
 					/>
 					<Input
 						disabled={true}
 						leftIcon={{ type: 'material', name: 'lock' }}
 						style={styles.normalText}
 						renderErrorMessage={false}
+						value={userInfo.password}
 					/>
 					<CheckBox
 						disabled={true}
 						title="Check here to indicate that you have agreed to our Terms and read out Data Usage Policy."
 						containerStyle={styles.cardTextContainer}
-						checked={isChecked}
-						onPress={() => setChecked(!isChecked)}
+						checked={true}
 					/>
-					{/* <SubmitButton loading={false} disabled={!isChecked} navigation={navigation} /> */}
+					<Button onPress={() => dispatch(setScreen('Done'))} title="Go to Done" />
 				</Card>
 			</ImageBackground>
 		</View>
