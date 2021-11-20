@@ -3,8 +3,8 @@ import { StyleSheet, ImageBackground, Text, View, StyleProp, ViewStyle } from 'r
 import { Colour } from '../../constants'
 import { Card, Input, CheckBox, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { useAppDispatch } from '../../hooks'
-import { setScreen, setUserInfo } from '../../redux/submitFormSlice'
+import { useGetUserCountQuery } from '../../services'
+import { LoginButton } from '../../components'
 
 // interface Props {
 // 	navigation: StackNavigationProp<RootStackParamList, 'Home'>
@@ -16,23 +16,8 @@ export default function Home() {
 	const [secureImg, setSecureImg] = useState('visibility')
 	const [mailErrMsg, setMailError] = useState('')
 	const [passErrMsg, setPassError] = useState('')
-
-	// Cannot use useRef in react-native-elements
-	// const inputMailRef = useRef<typeof Input>(null)
-	// const inputPasswordRef = useRef<typeof Input>(null)
 	const [mail, setMail] = useState('')
 	const [password, setPassword] = useState('')
-
-	// const [isLoading, setLoading] = useState(false)
-	const dispatch = useAppDispatch()
-	// React.useEffect(
-	// 	() =>
-	// 		navigation.addListener('focus', () => {
-	// 			console.log('focus Home')
-	// 			dispatch(setScreen('Confirm'))
-	// 		}),
-	// 	[navigation, dispatch]
-	// )
 
 	return (
 		<View style={styles.container}>
@@ -41,13 +26,11 @@ export default function Home() {
 				resizeMode="cover"
 				style={styles.image}
 			>
-				<Card>
+				<Card containerStyle={styles.cardContainer}>
 					<Card.Title>SUBMIT FORM</Card.Title>
 					<Card.Divider />
 					<Card.Image source={require('../../assets/icon.png')} />
-					<Text style={styles.cardTextContainer}>
-						A testing input form build with React Native Elements component.
-					</Text>
+					<UserCountText />
 					<Input
 						placeholder="email@address.com"
 						leftIcon={<Icon name="email" size={24} color="black" />}
@@ -95,38 +78,20 @@ export default function Home() {
 						checked={isChecked}
 						onPress={() => setChecked(!isChecked)}
 					/>
-					<Button
+					<LoginButton
 						disabled={!isChecked || mailErrMsg !== '' || passErrMsg !== ''}
-						title="Go to Confirm"
-						onPress={() => {
-							dispatch(setUserInfo({ mail: mail, password: password }))
-							dispatch(setScreen('Confirm'))
-						}}
+						navParam={{ mail: mail, password: password, gender: 0 }}
 					/>
-					{/* <NavigationButton
-						disabled={!isChecked || mailErrMsg !== '' || passErrMsg !== ''}
-						navigation={navigation}
-						title="Go to Confirm"
-						targetScreen="Confirm"
-						navParam={{ mail: mail, password: password }}
-					/> */}
-					{/* <SubmitButton
-						loading={false}
-						disabled={!isChecked || mailErrMsg !== '' || passErrMsg !== ''}
-						navigation={navigation}
-						targetScreen="Done"
-						navParam={{ mail: mail, password: password }}
-					/> */}
 				</Card>
 			</ImageBackground>
 		</View>
 	)
 
 	function RegExValidation(inputText: string, regEx: string, inputType: number) {
-		console.log('Validate, %s, %s, %i', inputText, regEx, inputType)
+		// console.log('Validate, %s, %s, %i', inputText, regEx, inputType)
 		const condition = new RegExp(regEx)
 		const regResult = condition.test(inputText)
-		console.log(regResult)
+		// console.log(regResult)
 		if (!regResult) {
 			inputType === 0
 				? setMailError('Should be in format email@address')
@@ -138,6 +103,18 @@ export default function Home() {
 		}
 		return regResult
 	}
+
+	function UserCountText() {
+		const { data: userCount } = useGetUserCountQuery(0)
+		console.log('Home UserCount')
+		console.log(userCount)
+		return (
+			<Text style={styles.cardTextContainer}>
+				A testing input form build with React Native Elements component.{'\n'}Current number of user
+				on server: {userCount?.count}
+			</Text>
+		)
+	}
 }
 
 const styles = StyleSheet.create({
@@ -147,16 +124,23 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
+	cardContainer: {
+		flexDirection: 'column',
+		justifyContent: 'space-between',
+		alignItems: 'stretch',
+	},
 	cardTextContainer: {
 		marginTop: 20,
 		marginBottom: 20,
-		paddingRight: 30,
+		paddingRight: 10,
+		textAlign: 'justify',
 	},
 	image: {
 		flex: 1,
 		justifyContent: 'center',
 	},
 	normalText: {
+		flex: 1,
 		fontSize: 14,
 		marginLeft: 10,
 		textAlign: 'justify',

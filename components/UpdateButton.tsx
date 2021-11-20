@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Alert } from 'react-native'
 import { Button } from 'react-native-elements'
 import { ConfirmPageParamList } from '../types'
-import { useCreateUserByMailMutation } from '../services'
+import { useUpdateUserMutation } from '../services'
 import { useAppDispatch } from '../hooks'
 import { setScreen, setUserInfo } from '../redux/submitFormSlice'
 
@@ -12,7 +12,6 @@ import { setScreen, setUserInfo } from '../redux/submitFormSlice'
 //navParam: ConfirmPageParamList
 // onClick: void
 //}
-
 interface Props {
 	navParam: ConfirmPageParamList
 }
@@ -22,8 +21,8 @@ interface ApiError {
 	error: string
 }
 
-export function SubmitButton({ navParam }: Props) {
-	const [createUserByMail, { isLoading }] = useCreateUserByMailMutation()
+export function UpdateButton({ navParam }: Props) {
+	const [updateUser, { isLoading }] = useUpdateUserMutation()
 	const dispatch = useAppDispatch()
 
 	const showAlert = (err: ApiError) => {
@@ -40,7 +39,7 @@ export function SubmitButton({ navParam }: Props) {
 	const handleCreateUser = async () => {
 		try {
 			console.log('Try!')
-			await createUserByMail(navParam).unwrap()
+			await updateUser(navParam).unwrap()
 			dispatch(setUserInfo(navParam))
 			dispatch(setScreen('Done'))
 		} catch (err) {
@@ -53,8 +52,8 @@ export function SubmitButton({ navParam }: Props) {
 
 	return (
 		<Button
-			buttonStyle={styles.applyButton}
-			title="Submit & Go to Done"
+			containerStyle={styles.container}
+			title="Update Gender"
 			loading={isLoading}
 			onPress={handleCreateUser}
 		/>
@@ -62,12 +61,10 @@ export function SubmitButton({ navParam }: Props) {
 }
 
 const styles = StyleSheet.create({
-	applyButton: {
-		borderRadius: 0,
-		marginLeft: 0,
-		marginRight: 0,
-		marginBottom: 0,
+	container: {
+		flex: 1,
+		marginRight: 5,
 	},
 })
 
-export default SubmitButton
+export default UpdateButton

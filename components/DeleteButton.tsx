@@ -1,9 +1,10 @@
 import React from 'react'
 import { StyleSheet, Alert } from 'react-native'
-import { Button } from 'react-native-elements'
-import { ConfirmPageParamList } from '../types'
-import { useCreateUserByMailMutation } from '../services'
-import { useAppDispatch } from '../hooks'
+import { Button, ButtonProps } from 'react-native-elements'
+import { Colour } from '../constants'
+import { useDeleteUserMutation } from '../services'
+import { useAppDispatch, useAppSelector } from '../hooks'
+import { selectUserInfo } from '../redux/selector'
 import { setScreen, setUserInfo } from '../redux/submitFormSlice'
 
 //interface Props {
@@ -12,22 +13,18 @@ import { setScreen, setUserInfo } from '../redux/submitFormSlice'
 //navParam: ConfirmPageParamList
 // onClick: void
 //}
-
-interface Props {
-	navParam: ConfirmPageParamList
-}
-
 interface ApiError {
 	status: string
 	error: string
 }
 
-export function SubmitButton({ navParam }: Props) {
-	const [createUserByMail, { isLoading }] = useCreateUserByMailMutation()
+export function DeleteButton(props: ButtonProps) {
+	const [deleteUser, { isLoading }] = useDeleteUserMutation()
 	const dispatch = useAppDispatch()
+	const userInfo = useAppSelector(selectUserInfo)
 
 	const showAlert = (err: ApiError) => {
-		Alert.alert('An error occurred', "We couldn't save your data, try again!" + err.error, [
+		Alert.alert('An error occurred', "We couldn't delete the user, try again!" + err.error, [
 			{ text: 'OK', onPress: () => console.log(err) },
 		])
 	}
@@ -36,12 +33,12 @@ export function SubmitButton({ navParam }: Props) {
 		return typeof (x as ApiError).error === 'string'
 	}
 
-	//send data to mysql, finally navigate to Done view
+	//Delete user from mysql, logout and navigate to Done view
 	const handleCreateUser = async () => {
 		try {
 			console.log('Try!')
-			await createUserByMail(navParam).unwrap()
-			dispatch(setUserInfo(navParam))
+			await deleteUser(userInfo).unwrap()
+			dispatch(setUserInfo({ mail: '', password: '', gender: 0 }))
 			dispatch(setScreen('Done'))
 		} catch (err) {
 			console.log('Catch!')
@@ -53,8 +50,10 @@ export function SubmitButton({ navParam }: Props) {
 
 	return (
 		<Button
+			{...props}
 			buttonStyle={styles.applyButton}
-			title="Submit & Go to Done"
+			containerStyle={styles.container}
+			title="Delete User"
 			loading={isLoading}
 			onPress={handleCreateUser}
 		/>
@@ -63,11 +62,12 @@ export function SubmitButton({ navParam }: Props) {
 
 const styles = StyleSheet.create({
 	applyButton: {
-		borderRadius: 0,
-		marginLeft: 0,
-		marginRight: 0,
-		marginBottom: 0,
+		backgroundColor: Colour.red,
+	},
+	container: {
+		flex: 1,
+		marginLeft: 5,
 	},
 })
 
-export default SubmitButton
+export default DeleteButton

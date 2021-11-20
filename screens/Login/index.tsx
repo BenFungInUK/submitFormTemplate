@@ -6,16 +6,13 @@ import { Card, Input, CheckBox, ButtonGroup } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useAppSelector } from '../../hooks'
 import { selectUserInfo } from '../../redux/selector'
-import { SubmitButton } from '../../components'
+import { UpdateButton, DeleteButton } from '../../components'
 
-// interface Props {
-//	route: RouteProp<RootStackParamList, 'Confirm'>
-// 	navigation: StackNavigationProp<RootStackParamList, 'Confirm'>
-// }
+//Update and delete operation
 
-export default function Confirm() {
+export default function Login() {
 	const userInfo = useAppSelector(selectUserInfo)
-	const [selectedGender, setSelectedGender] = useState(0)
+	const [selectedGender, setSelectedGender] = useState(userInfo.gender)
 
 	return (
 		<View style={styles.container}>
@@ -25,11 +22,11 @@ export default function Confirm() {
 				style={styles.image}
 			>
 				<Card containerStyle={styles.cardContainer}>
-					<Card.Title>CREATE USER</Card.Title>
+					<Card.Title>USER INFO</Card.Title>
 					<Card.Divider />
 					<Card.Image source={require('../../assets/icon.png')} />
 					<Text style={styles.cardTextContainer}>
-						Please check you have input the correct information and select your gender for record.
+						A testing input form build with React Native Elements component.
 					</Text>
 					<Input
 						disabled={true}
@@ -55,15 +52,28 @@ export default function Confirm() {
 							containerStyle={styles.buttonGroup}
 						/>
 					</View>
+					{/* <ButtonGroup
+						onPress={this.updateIndex}
+						selectedIndex={selectedIndex}
+						buttons={buttons}
+						containerStyle={{height: 100}}
+					/> */}
 					<CheckBox
 						disabled={true}
 						title="Check here to indicate that you have agreed to our Terms and read out Data Usage Policy."
 						containerStyle={styles.cardTextContainer}
 						checked={true}
 					/>
-					<SubmitButton
-						navParam={{ mail: userInfo.mail, password: userInfo.password, gender: selectedGender }}
-					/>
+					<View style={styles.actionButtonContainer}>
+						<UpdateButton
+							navParam={{
+								mail: userInfo.mail,
+								password: userInfo.password,
+								gender: selectedGender,
+							}}
+						/>
+						<DeleteButton />
+					</View>
 					{/* <Button onPress={() => dispatch(setScreen('Done'))} title="Go to Done" /> */}
 				</Card>
 			</ImageBackground>
@@ -111,5 +121,11 @@ const styles = StyleSheet.create({
 	},
 	buttonGroup: {
 		flex: 3,
+	},
+	actionButtonContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		// minHeight: 40,
 	},
 })

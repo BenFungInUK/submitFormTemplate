@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import HomeScreen from '../screens/Home'
 import ConfirmScreen from '../screens/Confirm'
+import LoginScreen from '../screens/Login'
 import DoneScreen from '../screens/Done'
 import { RootStackParamList } from '../types'
 import { useAppSelector } from '../hooks'
@@ -19,18 +20,17 @@ export default function Navigation() {
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function RootNavigator() {
-	// const [stackScreen, setStackScreen] = React.useState('Home')
 	const screen = useAppSelector(selectScreen)
-	// React.useEffect(() => setStackScreen(screen), [screen])
 	console.log('render root')
 	console.log(screen)
-	// console.log(stackScreen)
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
 			{screen === 'Done' ? (
 				<Stack.Screen name="Done" component={DoneScreen} />
 			) : screen === 'Confirm' ? (
 				<Stack.Screen name="Confirm" component={ConfirmScreen} />
+			) : screen === 'Login' ? (
+				<Stack.Screen name="Login" component={LoginScreen} />
 			) : (
 				<Stack.Screen name="Home" component={HomeScreen} />
 			)}

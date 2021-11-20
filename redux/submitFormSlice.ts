@@ -6,8 +6,8 @@ export interface SubmitFormState {
 	screenToDisplay: string
 }
 
-const initialState: SubmitFormState = {
-	userInfo: { mail: '', password: '' },
+export const initialState: SubmitFormState = {
+	userInfo: { mail: '', password: '', gender: 1 },
 	screenToDisplay: 'Home',
 }
 
