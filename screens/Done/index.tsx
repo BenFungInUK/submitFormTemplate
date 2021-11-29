@@ -18,7 +18,7 @@ export default function Done() {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.normalText}>
-				All data has been saved to our server. {'\n'}Thankyou for using our service!
+				All data has been saved to our server. {'\n'}Thank you for using our service!
 			</Text>
 			<View style={styles.actionButtonContainer}>
 				<Button

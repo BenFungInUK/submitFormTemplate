@@ -105,13 +105,23 @@ export default function Home() {
 	}
 
 	function UserCountText() {
-		const { data: userCount } = useGetUserCountQuery(0)
-		console.log('Home UserCount')
-		console.log(userCount)
+		const { data: userCount, isLoading, isFetching } = useGetUserCountQuery(0)
 		return (
 			<Text style={styles.cardTextContainer}>
-				A testing input form build with React Native Elements component.{'\n'}Current number of user
-				on server: {userCount?.count}
+				{isLoading ? (
+					<>Loading...</>
+				) : userCount ? (
+					isFetching ? (
+						<>Fetching...</>
+					) : (
+						<>
+							A testing input form build with React Native Elements component.{'\n'}Current number
+							of user on server: {userCount.count}
+						</>
+					)
+				) : (
+					<>A testing input form build with React Native Elements component.</>
+				)}
 			</Text>
 		)
 	}

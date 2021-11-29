@@ -5,7 +5,10 @@ import { ConfirmPageParamList, UserCount, LoginType, UserGender } from '../types
 // url: http://192.168.1.6:3000/createUser
 export const submitFormApi = createApi({
 	reducerPath: 'submitFormApi',
-	baseQuery: fetchBaseQuery({ baseUrl: 'http://192.168.1.6:3000/' }),
+	baseQuery: fetchBaseQuery({
+		baseUrl: 'http://mysqlapi-env.eba-sixjyicr.eu-west-2.elasticbeanstalk.com/',
+	}),
+	tagTypes: ['UserCount'],
 	endpoints: (builder) => ({
 		createUserByMail: builder.mutation<ConfirmPageParamList, ConfirmPageParamList>({
 			query(body) {
@@ -18,9 +21,14 @@ export const submitFormApi = createApi({
 					body,
 				}
 			},
+			invalidatesTags: ['UserCount'],
 		}),
 		getUserCount: builder.query<UserCount, Number>({
-			query: () => ({ url: 'getUserCount' }),
+			query() {
+				console.log('getUserCount')
+				return { url: 'getUserCount' }
+			},
+			providesTags: ['UserCount'],
 			transformResponse: (response: { response: UserCount[] }) => response.response[0],
 		}),
 		getUserGender: builder.mutation<UserGender, Pick<ConfirmPageParamList, 'mail'>>({
@@ -68,6 +76,7 @@ export const submitFormApi = createApi({
 					body,
 				}
 			},
+			invalidatesTags: ['UserCount'],
 		}),
 	}),
 })
